@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: elk
+  name: kibana
+  labels:
+    app: kibana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      nodeSelector:
+        Name: Kibana
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.2
+        ports:
+        - containerPort: 5601
+          name: webinterface
+        env:
+        - name: ELASTICSEARCH_HOSTS
+          value: "http://elasticsearch-client.elk.svc.cluster.local:9200"
+       # - name: ELASTICSEARCH_USER
+       #   value: "elastic"
+       # - name: ELASTICSEARCH_PASSWORD
+       #   valueFrom:
+       #     secretKeyRef:
+       #       name: elasticsearch-pw-elastic
+       #       key: password
+        volumeMounts:
+        - name: config
+          mountPath: /usr/share/kibana/config/kibana.yml
+          readOnly: true
+          subPath: kibana.yml
+      volumes:
+      - name: config
+        configMap:
+          name: kibana-config
+---
