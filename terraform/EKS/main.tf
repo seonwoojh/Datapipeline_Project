@@ -44,7 +44,7 @@ provider "helm" {
 }
 
 module "lb-controller" {
-  source       = "../../modules/lb-controller"
+  source       = "./modules/lb-controller"
   cluster_name = module.eks.cluster.name
   oidc         = module.eks.oidc
   tags         = var.tags
@@ -83,7 +83,7 @@ module "metrics-server" {
 }
 
 module "prometheus" {
-  source       = "../../modules/prometheus"
+  source       = "./modules/prometheus"
   cluster_name = module.eks.cluster.name
   oidc         = module.eks.oidc
   tags         = { env = "test" }
