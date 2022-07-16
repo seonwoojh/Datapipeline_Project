@@ -8,7 +8,7 @@ metadata:
     app: elasticsearch
     role: client
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: elasticsearch
@@ -23,7 +23,7 @@ spec:
         Client: Node
       containers:
       - name: elasticsearch-client
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        image: amazon/opendistro-for-elasticsearch:1.13.2
         env:
         - name: CLUSTER_NAME
           value: elasticsearch
