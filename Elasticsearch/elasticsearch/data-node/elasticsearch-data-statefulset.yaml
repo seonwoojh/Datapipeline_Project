@@ -13,7 +13,7 @@ spec:
     matchLabels:
       app: elasticsearch-data
       role: data
-  replicas: 2
+  replicas: 3
   template:
     metadata:
       labels:
@@ -24,7 +24,7 @@ spec:
         Data: Node 
       containers:
       - name: elasticsearch-data
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        image: amazon/opendistro-for-elasticsearch:1.13.2
         env:
         - name: CLUSTER_NAME
           value: elasticsearch
