@@ -20,20 +20,15 @@ spec:
         Name: Kibana
       containers:
       - name: kibana
-        image: docker.elastic.co/kibana/kibana:7.10.2
+        image: tjswl950/ek_kib01:pluginRemove
+        imagePullPolicy: Always
+        command: 
         ports:
         - containerPort: 5601
           name: webinterface
         env:
         - name: ELASTICSEARCH_HOSTS
-          value: "http://elasticsearch-client.elk.svc.cluster.local:9200"
-       # - name: ELASTICSEARCH_USER
-       #   value: "elastic"
-       # - name: ELASTICSEARCH_PASSWORD
-       #   valueFrom:
-       #     secretKeyRef:
-       #       name: elasticsearch-pw-elastic
-       #       key: password
+          value: "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
         volumeMounts:
         - name: config
           mountPath: /usr/share/kibana/config/kibana.yml
