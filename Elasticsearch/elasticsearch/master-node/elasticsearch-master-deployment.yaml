@@ -20,7 +20,7 @@ spec:
         role: master
     spec:
       nodeSelector:
-        Master: Node 
+        Name: Master 
       containers:
       - name: elasticsearch-master
         image: amazon/opendistro-for-elasticsearch:1.13.2

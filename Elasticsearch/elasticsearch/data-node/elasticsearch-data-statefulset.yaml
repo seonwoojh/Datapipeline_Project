@@ -21,7 +21,7 @@ spec:
         role: data
     spec:
       nodeSelector:
-        Data: Node 
+        Name: Data 
       containers:
       - name: elasticsearch-data
         image: amazon/opendistro-for-elasticsearch:1.13.2
