@@ -8,7 +8,7 @@ metadata:
     app: elasticsearch
     role: master
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: elasticsearch
@@ -23,7 +23,8 @@ spec:
         Master: Node 
       containers:
       - name: elasticsearch-master
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+        image: amazon/opendistro-for-elasticsearch:1.13.2
+        imagePullPolicy: Always
         env:
         - name: CLUSTER_NAME
           value: elasticsearch

@@ -18,6 +18,6 @@ data:
       master: true
       data: false
       ingest: false
-    xpack.security.enabled: false
-    xpack.monitoring.collection.enabled: false
+    opendistro_security.ssl.http.enabled: false
+    opendistro_security.disabled: true
 ---
