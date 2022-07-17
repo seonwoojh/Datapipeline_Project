@@ -20,7 +20,7 @@ spec:
         role: client
     spec:
       nodeSelector:
-        Client: Node
+        Name: Client
       containers:
       - name: elasticsearch-client
         image: amazon/opendistro-for-elasticsearch:1.13.2
