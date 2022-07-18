@@ -39,6 +39,13 @@ managed_node_groups = [
     max_size      = 3
     desired_size  = 1
     instance_type = "t3.medium"
+  },
+  {
+    name          = "Logstash"
+    min_size      = 1
+    max_size      = 3
+    desired_size  = 1
+    instance_type = "t3.medium"
   }
 ]
 node_groups = []
