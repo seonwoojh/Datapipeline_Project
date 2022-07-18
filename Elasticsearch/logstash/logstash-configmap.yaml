@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elk
+data:
+  # logstash conf
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+    config.reload.automatic: true
+
+# logstash pipeline
+  logstash.conf: |
+    input {
+      tcp {
+        port => 5000
+      }
+    }
+
+    filter {
+      # if [message] =~ "ciUrl" {
+      #   mutate {
+      #     gsub => ["message", "[\"/{}]", ""]
+      #   }
+      #   kv {
+      #     field_split => ","
+      #     value_split => ":"
+      #   }
+      #   mutate {
+      #     remove_field => [ "port","@version","host","message" ]
+      #   } # mutate end
+      # }
+      # else {
+      #   drop{}
+      # }
+
+      #   mutate {
+      #     convert => {
+      #       "duration" => "integer"
+      #       "executor" => "integer"
+      #       "queueTime" => "integer"
+      #       "startTime" => "integer"
+      #       "number" => "integer"
+      #       "endTime" => "integer"
+      #     }
+      #    }
+    }
+
+    output {
+      stdout {
+        codec => rubydebug
+      }
+
+
+      elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "test-%{+YYYY.MM.dd}"
+          codec => "json"
+          timeout => 120    
+      }
+    }
