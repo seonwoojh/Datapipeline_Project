@@ -12,6 +12,13 @@ tags = {
 kubernetes_version  = "1.21"
 enable_ssm          = true
 managed_node_groups = [
+  {
+    name          = "crawler"
+    min_size      = 1
+    max_size      = 3
+    desired_size  = 1
+    instance_type = "t3.medium"
+  },
 	{
     name          = "ElasticSearch-master"
     min_size      = 1
