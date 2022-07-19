@@ -13,38 +13,37 @@ data:
 # logstash pipeline
   logstash.conf: |
     input {
-      tcp {
-        port => 5000
+      kafka {
+        bootstrap_servers => "43.200.44.17:9092"
+        topics => "jeonj5"
+        consumer_threads => 3
       }
     }
 
     filter {
-      # if [message] =~ "ciUrl" {
-      #   mutate {
-      #     gsub => ["message", "[\"/{}]", ""]
-      #   }
-      #   kv {
-      #     field_split => ","
-      #     value_split => ":"
-      #   }
-      #   mutate {
-      #     remove_field => [ "port","@version","host","message" ]
-      #   } # mutate end
+         mutate {
+           gsub => ["message", "[\"/{}]", ""]
+         }
+
+         kv {
+           field_split => ","
+           value_split => ":"
+         }
+         mutate {
+           remove_field => [ "port","@version","host","message" ]
+           rename => {" comment" => "comment"}
+           rename => {" date" => "date"}
+         } # mutate end
       # }
       # else {
       #   drop{}
       # }
 
-      #   mutate {
-      #     convert => {
-      #       "duration" => "integer"
-      #       "executor" => "integer"
-      #       "queueTime" => "integer"
-      #       "startTime" => "integer"
-      #       "number" => "integer"
-      #       "endTime" => "integer"
-      #     }
-      #    }
+        mutate {
+          convert => {
+            "star" => "integer"
+          }
+         }
     }
 
     output {
@@ -55,7 +54,7 @@ data:
 
       elasticsearch {
           hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-          index => "test-%{+YYYY.MM.dd}"
+          index => "kafka-test-%{+YYYY.MM.dd}"
           codec => "json"
           timeout => 120    
       }
