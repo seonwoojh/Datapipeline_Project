@@ -35,7 +35,7 @@ spec:
         - name: MASTER_NODES
           value: elasticsearch-master
         - name: "ES_JAVA_OPTS"
-          value: "-Xms500m -Xmx500m"
+          value: "-Xms1G -Xmx1G"
         ports:
         - containerPort: 9300
           name: transport
