@@ -14,8 +14,8 @@ data:
   logstash.conf: |
     input {
       kafka {
-        bootstrap_servers => "43.200.44.17:9092"
-        topics => "jeonj5"
+        bootstrap_servers => "k8s-default-kaf1-115153397e-d1490aa9f4a60a9d.elb.ap-northeast-1.amazonaws.com:9092,k8s-default-kaf2-02002caa46-49a2512fad374462.elb.ap-northeast-1.amazonaws.com:9092,k8s-default-kaf3-eaa91f0a90-f0eeafac11759690.elb.ap-northeast-1.amazonaws.com:9092"
+        topics => "test4"
         consumer_threads => 3
       }
     }
