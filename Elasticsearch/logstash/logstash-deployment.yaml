@@ -42,7 +42,7 @@ spec:
               memory: 1.5G
           env:
             - name: LS_JAVA_OPTS
-              value: '-Xmx512m -Xms512m'
+              value: '-Xmx1G -Xms1G'
           ports:
             - name: tcp
               containerPort: 5000
