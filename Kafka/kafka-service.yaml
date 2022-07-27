@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-cluster
+  namespace: kafka
+
+spec:
+  type: NodePort
+  ports:
+    - name: port-9092
+      port: 9092
+      targetPort: 30001
+  selector:
+    app: kafka

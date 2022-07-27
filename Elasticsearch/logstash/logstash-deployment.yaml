@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: logstash
+  namespace: elk
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: logstash
+  template:
+    metadata:
+      labels:
+        app: logstash
+
+    spec:
+      nodeSelector:
+        Name: Logstash
+      volumes:
+        - name: logstash-config-volume
+          configMap:
+            name: logstash-config
+            items:
+              - key: logstash.yml
+                path: logstash.yml
+        - name: logstash-pipeline-volume
+          configMap:
+            name: logstash-config
+            items:
+              - key: logstash.conf
+                path: logstash.conf
+      containers:
+        - name: logstash
+          image: docker.elastic.co/logstash/logstash:7.10.2
+          imagePullPolicy: # 바꾸기
+          resources:
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+            requests:
+              cpu: 1500m
+              memory: 1.5G
+          env:
+            - name: LS_JAVA_OPTS
+              value: '-Xmx1G -Xms1G'
+          ports:
+            - name: tcp
+              containerPort: 5000
+              protocol: TCP
+          volumeMounts:
+            - name: logstash-config-volume
+              mountPath: /usr/share/logstash/config
+
+            - name: logstash-pipeline-volume
+              mountPath: /usr/share/logstash/pipeline
+    

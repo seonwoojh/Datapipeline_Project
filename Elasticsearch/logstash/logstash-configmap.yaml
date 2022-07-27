@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+  namespace: elk
+data:
+  # logstash conf
+  logstash.yml: |
+    http.host: "0.0.0.0"
+    path.config: /usr/share/logstash/pipeline
+    config.reload.automatic: true
+
+# logstash pipeline
+  logstash.conf: |
+    input {
+      kafka {
+        bootstrap_servers => "43.200.44.17:9092"
+        # topics => ["jeonj95","jeonj96","jeonj97","jeonj98"]
+        topics => "jeonj95"
+        consumer_threads => 3
+        isolation_level => "read_committed"
+        value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"
+      }
+    }
+
+    filter {
+         mutate {
+           gsub => ["message", "[\"/{}]", ""]
+         }
+
+         date {
+          match => ["timestamp", "yyyy-MM-dd HH:mm:ss", "ISO8601"]
+          target => "@timestamp"
+          timezone => "Asia/Seoul"
+         }
+         
+         mutate {
+          remove_field => ["timestamp"]
+         }
+
+         kv {
+           field_split => ","
+           value_split => ":"
+         }
+         mutate {
+           remove_field => [ "port","@version","host","message" ]
+           rename => {" comment" => "comment"}
+           rename => {" date" => "date"}
+         }
+
+
+        mutate {
+          convert => {
+            "star" => "integer"
+          }
+         }
+    }
+
+    output {
+      stdout {
+        codec => rubydebug
+      }
+
+
+      elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "kafka-test-%{+YYYY.MM.dd}"
+          codec => "json"
+          timeout => 120    
+      }
+    }

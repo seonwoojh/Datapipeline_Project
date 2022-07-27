@@ -27,7 +27,7 @@ module "eks" {
   source              = "Young-ook/eks/aws"
   name                = var.name
   tags                = var.tags
-  subnets             = values(module.vpc.subnets["private"])
+  subnets             = values(module.vpc.subnets["public"])
   kubernetes_version  = var.kubernetes_version
   managed_node_groups = var.managed_node_groups
   node_groups         = var.node_groups
@@ -44,7 +44,7 @@ provider "helm" {
 }
 
 module "lb-controller" {
-  source       = "../../modules/lb-controller"
+  source       = "./modules/lb-controller"
   cluster_name = module.eks.cluster.name
   oidc         = module.eks.oidc
   tags         = var.tags
@@ -83,7 +83,7 @@ module "metrics-server" {
 }
 
 module "prometheus" {
-  source       = "../../modules/prometheus"
+  source       = "./modules/prometheus"
   cluster_name = module.eks.cluster.name
   oidc         = module.eks.oidc
   tags         = { env = "test" }

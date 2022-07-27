@@ -12,26 +12,33 @@ tags = {
 kubernetes_version  = "1.21"
 enable_ssm          = true
 managed_node_groups = [
+  {
+    name          = "crawler"
+    min_size      = 1
+    max_size      = 3
+    desired_size  = 1
+    instance_type = "t3.medium"
+  },
 	{
     name          = "ElasticSearch-master"
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "ElasticSearch-data"
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "ElasticSearch-client"
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "Kibana"
@@ -39,6 +46,13 @@ managed_node_groups = [
     max_size      = 3
     desired_size  = 1
     instance_type = "t3.medium"
+  },
+  {
+    name          = "Logstash"
+    min_size      = 1
+    max_size      = 3
+    desired_size  = 1
+    instance_type = "t3.large"
   }
 ]
 node_groups = []
