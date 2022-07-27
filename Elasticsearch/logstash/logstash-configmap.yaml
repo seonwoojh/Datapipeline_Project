@@ -14,15 +14,28 @@ data:
   logstash.conf: |
     input {
       kafka {
-        bootstrap_servers => "k8s-default-kaf1-115153397e-d1490aa9f4a60a9d.elb.ap-northeast-1.amazonaws.com:9092,k8s-default-kaf2-02002caa46-49a2512fad374462.elb.ap-northeast-1.amazonaws.com:9092,k8s-default-kaf3-eaa91f0a90-f0eeafac11759690.elb.ap-northeast-1.amazonaws.com:9092"
-        topics => "test4"
+        bootstrap_servers => "43.200.44.17:9092"
+        # topics => ["jeonj95","jeonj96","jeonj97","jeonj98"]
+        topics => "jeonj95"
         consumer_threads => 3
+        isolation_level => "read_committed"
+        value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"
       }
     }
 
     filter {
          mutate {
            gsub => ["message", "[\"/{}]", ""]
+         }
+
+         date {
+          match => ["timestamp", "yyyy-MM-dd HH:mm:ss", "ISO8601"]
+          target => "@timestamp"
+          timezone => "Asia/Seoul"
+         }
+         
+         mutate {
+          remove_field => ["timestamp"]
          }
 
          kv {
@@ -33,11 +46,8 @@ data:
            remove_field => [ "port","@version","host","message" ]
            rename => {" comment" => "comment"}
            rename => {" date" => "date"}
-         } # mutate end
-      # }
-      # else {
-      #   drop{}
-      # }
+         }
+
 
         mutate {
           convert => {
