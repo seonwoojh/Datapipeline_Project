@@ -2,8 +2,8 @@ version: '3.3'
 services:
   es01:
     build:
-      context: elasticsearch/
-    container_name: es01
+      context: opensearch/
+    container_name: os01
     environment:
       - node.name=es01
       - cluster.name=es-docker-cluster
@@ -30,8 +30,8 @@ services:
     ports:
       - 5601:5601
     environment:
-      ELASTICSEARCH_URL: http://es01:9200
-      ELASTICSEARCH_HOSTS: http://es01:9200
+      ELASTICSEARCH_URL: http://os01:9200
+      ELASTICSEARCH_HOSTS: http://os01:9200
     networks:
       - elastic
 
