@@ -24,21 +24,21 @@ managed_node_groups = [
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "ElasticSearch-data"
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "ElasticSearch-client"
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }, 
 	{
     name          = "Kibana"
@@ -52,7 +52,7 @@ managed_node_groups = [
     min_size      = 1
     max_size      = 3
     desired_size  = 1
-    instance_type = "t3.medium"
+    instance_type = "t3.large"
   }
 ]
 node_groups = []
