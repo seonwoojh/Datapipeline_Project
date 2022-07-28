@@ -14,29 +14,19 @@ data:
   logstash.conf: |
     input {
       kafka {
-        bootstrap_servers => "43.200.44.17:9092"
-        # topics => ["jeonj95","jeonj96","jeonj97","jeonj98"]
-        topics => "jeonj95"
+        bootstrap_servers => ""
+        topics => ["smartstore.goodnara.review","smartstore.drstyle.review","smartstore.thecheaper.review","smartstore.180store.review","smartstore.cloony.review","smartstore.theshopsw.review"]
         consumer_threads => 3
         isolation_level => "read_committed"
         value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"
+        auto_offset_reset => "earliest"
       }
     }
 
     filter {
-         mutate {
-           gsub => ["message", "[\"/{}]", ""]
-         }
-
-         date {
-          match => ["timestamp", "yyyy-MM-dd HH:mm:ss", "ISO8601"]
-          target => "@timestamp"
-          timezone => "Asia/Seoul"
-         }
-         
-         mutate {
-          remove_field => ["timestamp"]
-         }
+        mutate {
+          gsub => ["message", "[\"/{}]", ""]
+        }
 
          kv {
            field_split => ","
@@ -46,6 +36,7 @@ data:
            remove_field => [ "port","@version","host","message" ]
            rename => {" comment" => "comment"}
            rename => {" date" => "date"}
+           rename => { " star" => "star" }
          }
 
 
@@ -57,15 +48,73 @@ data:
     }
 
     output {
-      stdout {
-        codec => rubydebug
-      }
+      stdout { codec => rubydebug }
+
+# ----------------- 스마트 스토어 모자 Topic -----------------
+ 
+	    if [topic] =~ "smartstore.goodnara.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.goodnara.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }
+	    } # if end
+
+	    else if [topic] =~ "smartstore.drstyle.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.drstyle.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }
+	    } # if end
+
+	    else if [topic] =~ "smartstore.thecheaper.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.thecheaper.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }	
+	    } # if end
+
+	# ----------------- 스마트 스토어 티셔츠 topic -----------------
+
+	    else if [topic] =~ "smartstore.180store.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.180store.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }	
+	    } # if end
+
+	    else if [topic] =~ "smartstore.cloony.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.cloony.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }	
+	    } # if end
+
+	    else if [topic] =~ "smartstore.theshopsw.review" {
+		    elasticsearch {
+			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+			    index => "smartstore.theshopsw.review-%{+YYYY.MM.dd}"
+			    codec => "json"
+			    timeout => 120
+		    }	
+	    } # if end
+    } # output end
 
 
-      elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-          index => "kafka-test-%{+YYYY.MM.dd}"
-          codec => "json"
-          timeout => 120    
-      }
+
+      # elasticsearch {
+      #     hosts => 
+      #     index => "kafka-test-%{+YYYY.MM.dd}"
+      #     codec => "json"
+      #     timeout => 120    
+      # }
     }
