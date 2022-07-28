@@ -1,1 +1,0 @@
-FROM amazon/opendistro-for-elasticsearch:1.13.2
