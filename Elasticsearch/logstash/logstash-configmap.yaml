@@ -108,13 +108,3 @@ data:
 		    }	
 	    } # if end
     } # output end
-
-
-
-      # elasticsearch {
-      #     hosts => 
-      #     index => "kafka-test-%{+YYYY.MM.dd}"
-      #     codec => "json"
-      #     timeout => 120    
-      # }
-    }
