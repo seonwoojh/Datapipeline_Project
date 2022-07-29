@@ -18,7 +18,7 @@
                 {
                     "match": {
                         "level": {
-                            "query": "ERROR",
+                            "query": "Success",
                             "operator": "OR",
                             "prefix_length": 0,
                             "max_expansions": 50,
