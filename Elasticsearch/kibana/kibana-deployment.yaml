@@ -21,7 +21,6 @@ spec:
       containers:
       - name: kibana
         image: tjswl950/ek_kib01:pluginRemove
-        imagePullPolicy: Always
         command: 
         ports:
         - containerPort: 5601
