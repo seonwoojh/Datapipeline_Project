@@ -28,12 +28,27 @@ data:
           gsub => ["message", "[\"/{}]", ""]
         }
 
+        mutate {
+          add_field => {
+            "timestamp" => ""
+          }
+        }
+
+        ruby {
+          code => "event.set('timestamp', event.get('@timestamp').time.localtime('+09:00').strftime('%Y-%m-%d %H:%M:%S'))"
+        }
+
+        date {
+          match => ["timestamp", "ISO8601", "YYYY-MM-dd HH:mm:ss"]
+          target => "timestamp"
+        }
+
          kv {
            field_split => ","
            value_split => ":"
          }
          mutate {
-           remove_field => [ "port","@version","host","message" ]
+           remove_field => [ "port","@version","host","message","@timestamp" ]
            rename => {" comment" => "comment"}
            rename => {" date" => "date"}
            rename => { " star" => "star" }
@@ -49,7 +64,6 @@ data:
 
     output {
       stdout { codec => rubydebug }
-
 # ----------------- 스마트 스토어 모자 Topic -----------------
  
 	    if [topic] =~ "smartstore.goodnara.review" {
