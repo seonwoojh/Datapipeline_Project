@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crawler-1
+spec:
+  nodeName: node2
+  containers:
+  - name: crawler-1
+    image: ddung1203/kafkacrawler:8
+    env:
+    - name: url
+      value: '[URL]'
+    - name: topic
+      value: [TOPIC_NAME]
+    - name: server
+      value: "[SERVER_IP]"
+    command: ["/bin/sh", "-c"]
+    args: ["cd /Datapipeline_Project/crawler; ./kafka_producer.py"]
+  restartPolicy: Never
