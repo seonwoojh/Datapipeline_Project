@@ -14,62 +14,89 @@ data:
   logstash.conf: |
     input {
       kafka {
-        bootstrap_servers => ""
+        bootstrap_servers => ""   # 브로커 주소 IP:9092
         topics => ["smartstore.goodnara.review","smartstore.drstyle.review","smartstore.thecheaper.review","smartstore.180store.review","smartstore.cloony.review","smartstore.theshopsw.review"]
-        consumer_threads => 3
-        isolation_level => "read_committed"
-        value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"
-        auto_offset_reset => "earliest"
+        consumer_threads => 3   # 컨슈머 쓰레드(파티션 갯수와 동일)
+        isolation_level => "read_committed"   # 트랜잭션 격리수준(폴링 메세지는 커밋된 트랜잭션 메세지만 반환한다.)
+        value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"    # 레코드값 역직렬화에 사용되는 JAVA Class(String)
+        auto_offset_reset => "earliest"   # 처음 브로커에 진입했을때, 데이터를 가지고오는 시작점을 지정한다. earliest는 consumer group이 설정되어 있지 않은 경우에만 적용되므로, 추후 컨슈머를 재시작 하더라도 데이터 중복 이슈를 해결할 수 있다.
       }
     }
 
     filter {
-        mutate {
-          gsub => ["message", "[\"/{}]", ""]
-        }
-
+      # ----------------------- UTC(default) Timestamp -> KST Timestamp로 변환하기 -----------------
         mutate {
           add_field => {
-            "timestamp" => ""
+            "timestamp" => ""   # timestamp 필드 생성(새로 생성된 필드의 기본 데이터 타입은 String이다.)
           }
         }
 
+
+        # ruby 코드로 "@timestamp" 필드의 UTC 기준 현재 시간에 9시간을 더한 값을 timestamp 필드에 저장한다.
         ruby {
           code => "event.set('timestamp', event.get('@timestamp').time.localtime('+09:00').strftime('%Y-%m-%d %H:%M:%S'))"
         }
 
+
+        # timestamp 필드의 데이터는 String이므로 날짜 형식으로 지정함(ISO8601)
+        # ISO8601 = 2019-01-26T17:00:00.000Z
         date {
           match => ["timestamp", "ISO8601", "YYYY-MM-dd HH:mm:ss"]
-          target => "timestamp"
+          target => "timestamp"   # date 필터가 적용될 필드 지정
         }
 
-         kv {
-           field_split => ","
-           value_split => ":"
-         }
-         mutate {
-           remove_field => [ "port","@version","host","message","@timestamp" ]
-           rename => {" comment" => "comment"}
-           rename => {" date" => "date"}
-           rename => { " star" => "star" }
-         }
+
+        # timestamp를 파싱하여 yy mm dd만 추출해 yymmdd 필드로 저장한다.
+        grok {
+          match => {
+            "timestamp" => "\d\d%{INT:yy}-%{MONTHNUM:mm}-%{MONTHDAY:dd}%{GREEDYDATA}"
+          }
+
+          # yymmdd를 메타필드로 저장한다.
+          add_field => {
+            "[@metadata][yymmdd]" => "%{yy}%{mm}%{dd}"
+          }
+        }
+
+        # ------------------------- message 필드 정제 ----------------------
+
+        # 정규표현식으로 특수문자 1차 제거한다.
+        mutate {
+          gsub => ["message", "[\"/{}]", ""]
+        }
 
 
+        # comma를 기준으로 메세지 필드를 나눈 후, colon을 기준으로 Key, value 형식으로 필드를 생성한다.
+        kv {
+          field_split => "," 
+          value_split => ":"
+        }
+
+        # 사용하지 않을 필드들을 제거하고 필드의 이름을 재설정한다.
+        mutate {
+          remove_field => [ "port","@version","host","message","@timestamp", "yy", "mm", "dd" ]
+          rename => {" comment" => "comment"}
+          rename => {" date" => "date"}
+          rename => { " star" => "star" }
+        }
+
+        # star 필드를 String에서 Integer 타입으로 변환한다.
         mutate {
           convert => {
             "star" => "integer"
           }
-         }
+        }
     }
 
     output {
       stdout { codec => rubydebug }
+
 # ----------------- 스마트 스토어 모자 Topic -----------------
- 
+      # 쇼핑몰 토픽에 따라 인덱스를 나누어 저장한다. 
 	    if [topic] =~ "smartstore.goodnara.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.goodnara.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.goodnara.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }
@@ -78,7 +105,7 @@ data:
 	    else if [topic] =~ "smartstore.drstyle.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.drstyle.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.drstyle.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }
@@ -87,7 +114,7 @@ data:
 	    else if [topic] =~ "smartstore.thecheaper.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.thecheaper.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.thecheaper.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }	
@@ -98,7 +125,7 @@ data:
 	    else if [topic] =~ "smartstore.180store.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.180store.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.180store.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }	
@@ -107,7 +134,7 @@ data:
 	    else if [topic] =~ "smartstore.cloony.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.cloony.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.cloony.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }	
@@ -116,7 +143,7 @@ data:
 	    else if [topic] =~ "smartstore.theshopsw.review" {
 		    elasticsearch {
 			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.theshopsw.review-%{+YYYY.MM.dd}"
+			    index => "smartstore.theshopsw.review-%{[@metadata][yymmdd]}"
 			    codec => "json"
 			    timeout => 120
 		    }	
