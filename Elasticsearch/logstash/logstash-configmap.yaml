@@ -20,6 +20,7 @@ data:
         isolation_level => "read_committed"   # 트랜잭션 격리수준(폴링 메세지는 커밋된 트랜잭션 메세지만 반환한다.)
         value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"    # 레코드값 역직렬화에 사용되는 JAVA Class(String)
         auto_offset_reset => "earliest"   # 처음 브로커에 진입했을때, 데이터를 가지고오는 시작점을 지정한다. earliest는 consumer group이 설정되어 있지 않은 경우에만 적용되므로, 추후 컨슈머를 재시작 하더라도 데이터 중복 이슈를 해결할 수 있다.
+        group_id => "smartstore" # 컨슈머 그룹이름을 지정한다.
       }
     }
 
@@ -91,61 +92,64 @@ data:
     output {
       stdout { codec => rubydebug }
 
-# ----------------- 스마트 스토어 모자 Topic -----------------
-      # 쇼핑몰 토픽에 따라 인덱스를 나누어 저장한다. 
-	    if [topic] =~ "smartstore.goodnara.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.goodnara.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }
-	    } # if end
+      # ------------- 쇼핑몰 토픽에 따라 인덱스를 나누어 저장한다. -------------
 
-	    else if [topic] =~ "smartstore.drstyle.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.drstyle.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }
-	    } # if end
+      # 스마트 스토어 모자 Topic
 
-	    else if [topic] =~ "smartstore.thecheaper.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.thecheaper.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }	
-	    } # if end
+      if [topic] =~ "smartstore.goodnara.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.goodnara.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
 
-	# ----------------- 스마트 스토어 티셔츠 topic -----------------
+      else if [topic] =~ "smartstore.drstyle.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.drstyle.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
 
-	    else if [topic] =~ "smartstore.180store.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.180store.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }	
-	    } # if end
+      else if [topic] =~ "smartstore.thecheaper.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.thecheaper.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
 
-	    else if [topic] =~ "smartstore.cloony.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.cloony.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }	
-	    } # if end
 
-	    else if [topic] =~ "smartstore.theshopsw.review" {
-		    elasticsearch {
-			    hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
-			    index => "smartstore.theshopsw.review-%{[@metadata][yymmdd]}"
-			    codec => "json"
-			    timeout => 120
-		    }	
-	    } # if end
+      # 스마트 스토어 티셔츠 Topic
+
+      else if [topic] =~ "smartstore.180store.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.180store.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
+
+      else if [topic] =~ "smartstore.cloony.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.cloony.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
+
+      else if [topic] =~ "smartstore.theshopsw.review" {
+        elasticsearch {
+          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          index => "smartstore.theshopsw.review-%{[@metadata][yymmdd]}"
+          codec => "json"
+          timeout => 120
+        }
+      } # if end
     } # output end
