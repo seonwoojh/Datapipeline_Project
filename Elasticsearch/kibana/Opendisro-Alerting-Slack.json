@@ -5,9 +5,9 @@
             "filter": [
                 {
                     "range": {
-                        "@timestamp": {
-                            "from": "{{period_end}}||-10m",
-                            "to": "{{period_end}}",
+                        "timestamp": {
+                            "from": "{{period_end}}||+9h-2m",
+                            "to": "{{period_end}}||+9h",
                             "include_lower": true,
                             "include_upper": true,
                             "format": "epoch_millis",
@@ -17,7 +17,7 @@
                 },
                 {
                     "match": {
-                        "level": {
+                        " status": {
                             "query": "Success",
                             "operator": "OR",
                             "prefix_length": 0,
@@ -29,7 +29,10 @@
                             "boost": 1
                         }
                     }
-                }]
-            }
+                }
+            ],
+            "adjust_pure_negative": true,
+            "boost": 1
         }
     }
+}
