@@ -19,7 +19,7 @@ data:
         consumer_threads => 3   # 컨슈머 쓰레드(파티션 갯수와 동일)
         isolation_level => "read_committed"   # 트랜잭션 격리수준(폴링 메세지는 커밋된 트랜잭션 메세지만 반환한다.)
         value_deserializer_class => "org.apache.kafka.common.serialization.StringDeserializer"    # 레코드값 역직렬화에 사용되는 JAVA Class(String)
-        auto_offset_reset => "earliest"   # 처음 브로커에 진입했을때, 데이터를 가지고오는 시작점을 지정한다. earliest는 consumer group이 설정되어 있지 않은 경우에만 적용되므로, 추후 컨슈머를 재시작 하더라도 데이터 중복 이슈를 해결할 수 있다.
+        auto_offset_reset => "earliest"   # 처음 브로커에 진입했을때, 데이터를 가지고오는 시작점을 지정한다. earliest는 초기에 consumer group이 설정되어 있지 않은 경우에만 적용되므로, 추후 컨슈머를 재시작 하더라도 데이터 중복 이슈를 해결할 수 있다.
         group_id => "smartstore" # 컨슈머 그룹이름을 지정한다.
       }
     }
