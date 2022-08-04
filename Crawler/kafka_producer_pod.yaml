@@ -6,7 +6,7 @@ spec:
   nodeName: node2
   containers:
   - name: crawler-1
-    image: ddung1203/kafkacrawler:8
+    image: ddung1203/kafkacrawler:9
     env:
     - name: url
       value: '[URL]'

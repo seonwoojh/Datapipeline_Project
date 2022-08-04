@@ -7,6 +7,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotInteractableException
+import re
 
 def chromeWebdriver():
     user_agent = 'Mozilla/5.0 (X11; Linux X86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
@@ -67,6 +68,7 @@ try:
                                         #date
                                         lisss = driver.find_element(By.XPATH, '/html/body/div/div/div[3]/div[2]/div[2]/div/div[3]/div[6]/div/div[3]/div/div[2]/ul/li[{}]/div/div/div/div[1]/div/div[1]/div[1]/div[2]/div[2]/span'.format(cmt))
                                         date.append(lisss.text)
+                                        comment[0]=re.sub(',', '', comment[0])
 
                                         tmp={'topic':topic, 'star':star.pop(), 'comment':comment.pop(), 'date':date.pop()}
                                         producer.send(topic, value=tmp)
