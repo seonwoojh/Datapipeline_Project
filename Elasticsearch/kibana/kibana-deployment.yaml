@@ -20,14 +20,14 @@ spec:
         Name: Kibana
       containers:
       - name: kibana
-        image: tjswl950/ek_kib01:pluginRemove
+        image: opendistro-for-elasticsearch-kibana:1.13.2
         command: 
         ports:
         - containerPort: 5601
           name: webinterface
         env:
         - name: ELASTICSEARCH_HOSTS
-          value: "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          value: "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
         volumeMounts:
         - name: config
           mountPath: /usr/share/kibana/config/kibana.yml
