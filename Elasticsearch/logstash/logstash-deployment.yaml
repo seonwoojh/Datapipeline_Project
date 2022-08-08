@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: logstash
-  namespace: elk
+  namespace: ELK
 spec:
   replicas: 1
   selector:

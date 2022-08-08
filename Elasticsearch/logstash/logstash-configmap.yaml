@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: logstash-config
-  namespace: elk
+  namespace: ELK
 data:
   # logstash conf
   logstash.yml: |
@@ -98,7 +98,7 @@ data:
 
       if [topic] =~ "smartstore.goodnara.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.goodnara.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
@@ -107,7 +107,7 @@ data:
 
       else if [topic] =~ "smartstore.drstyle.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.drstyle.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
@@ -116,7 +116,7 @@ data:
 
       else if [topic] =~ "smartstore.thecheaper.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.thecheaper.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
@@ -128,7 +128,7 @@ data:
 
       else if [topic] =~ "smartstore.180store.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.180store.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
@@ -137,7 +137,7 @@ data:
 
       else if [topic] =~ "smartstore.cloony.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.cloony.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
@@ -146,7 +146,7 @@ data:
 
       else if [topic] =~ "smartstore.theshopsw.review" {
         elasticsearch {
-          hosts => "http://elasticsearch-client-http.elk.svc.cluster.local:9200"
+          hosts => "http://elasticsearch-client-http.ELK.svc.cluster.local:9200"
           index => "smartstore.theshopsw.review-%{[@metadata][yymmdd]}"
           codec => "json"
           timeout => 120
