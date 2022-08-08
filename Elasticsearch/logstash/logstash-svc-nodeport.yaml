@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: logstash
-  namespace: elk
+  namespace: ELK
 spec:
   type: NodePort
   ports:
