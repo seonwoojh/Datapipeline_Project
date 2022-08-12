@@ -35,7 +35,7 @@
 
 **아키텍처 구성도**
 
-![kafka2.svg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/31e2485d-46ff-4e17-be84-956c197cbfff/kafka2.svg)
+![kafka2.svg](https://github.com/seonwoojh/img-source/blob/main/img/kafka.png?raw=true)
 
  **zookeeper 설정**
 
@@ -162,11 +162,11 @@ smartstore.theshopsw.review (스마트 스토어 theshopsw)
 
 **전체 프로젝트 구조**
 
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/3286610f-bc98-4f0b-8c5e-1ad22e4384c1/Untitled.png)
+![Untitled](https://github.com/seonwoojh/img-source/blob/main/img/%EC%A0%84%EC%B2%B4%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EA%B5%AC%EC%A1%B0.png?raw=true)
 
 **아키텍처 구성도**
 
-![Opensearch.svg](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/c88e8393-67bc-4a2f-8067-6782ba3f942c/Opensearch.svg)
+![Opensearch.svg](https://github.com/seonwoojh/img-source/blob/main/img/ELK.png?raw=true)
 
 1. Namespace
 
